@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Download, Volume2, Square, Circle } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Download, Volume2 } from "lucide-react";
 import ImageUpload from './ImageUpload';
 
 const CameraMirror = () => {
@@ -16,7 +16,7 @@ const CameraMirror = () => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<Timer | null>(null);
 
   useEffect(() => {
     const getMedia = async () => {
