@@ -29,7 +29,9 @@ const CameraMirror = () => {
           },
           audio: true
         });
-  
+        console.log('Stream got');
+        debugger;
+        console.log(stream);
         streamRef.current = stream;
         
         if (videoRef.current) {
@@ -122,9 +124,9 @@ const CameraMirror = () => {
         setError(`Device error: ${err.message}`);
       }
     };
-  
+    console.log('Getting media');
     getMedia();
-
+    console.log('Media got');
     return () => {
       // Cleanup
       if (streamRef.current) {
@@ -147,7 +149,12 @@ const CameraMirror = () => {
 
   const startRecording = () => {
     if (!mediaRecorderRef.current || !streamRef.current) {
-      console.error('MediaRecorder or stream not available');
+      if (!mediaRecorderRef.current) {
+        console.error('MediaRecorder not available');
+      }
+      if (!streamRef.current) {
+        console.error('Stream not available');
+      }
       return;
     }
     
