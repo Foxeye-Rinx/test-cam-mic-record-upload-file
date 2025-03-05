@@ -42,8 +42,21 @@ const MicTest: React.FC = () => {
       try {
         console.log('Starting microphone');
         
+        // Enumerate devices first to get audio input devices
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const audioDevices = devices.filter(device => device.kind === 'audioinput');
+        
+        if (audioDevices.length === 0) {
+          throw new Error('No audio input devices found');
+        }
+        
+        console.log('Using audio device:', audioDevices[0].label || 'Unnamed device');
+        
+        // Use the first audio device explicitly
         const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true
+          audio: {
+            deviceId: audioDevices[0].deviceId
+          }
         });
         
         // Log chi tiết về stream
