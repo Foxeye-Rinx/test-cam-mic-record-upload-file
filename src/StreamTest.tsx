@@ -3,11 +3,42 @@ import React, { useEffect, useRef, useState } from 'react';
 const StreamTest: React.FC = () => {
   const [error, setError] = useState<string>('');
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [supported, setSupported] = useState<any>();
+
+  useEffect(() => {
+    const getSupported = async () => {
+      try {
+        const supported = await navigator.mediaDevices.getSupportedConstraints();
+        setSupported(supported);
+      } catch (err) {
+        console.error('Error accessing supported constraints:', err);
+        setError(err instanceof Error ? err.message : 'Failed to access supported constraints');
+      }
+    };
+
+    getSupported();
+  }, []);
+
+  useEffect(() => {
+    const getAudioDevices = async () => {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const audioDevices = devices.filter(device => device.kind === 'audioinput');
+        console.log('Available audio devices:', audioDevices);
+      } catch (err) {
+        console.error('Error accessing audio devices:', err);
+        setError(err instanceof Error ? err.message : 'Failed to access audio devices');
+      }
+    };
+
+    getAudioDevices();
+  }, []);
 
   useEffect(() => {
     const startCamera = async () => {
       try {
         console.log('Starting camera');
+        
         const stream = await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: false
@@ -34,7 +65,7 @@ const StreamTest: React.FC = () => {
       } catch (err) {
         console.log('Error accessing camera');
         console.error('Error accessing camera:', err);
-        setError(err instanceof Error ? err.message : 'Failed to access camera');
+        setError(err instanceof Error ? "[Handled error from website] " + err.message : 'Failed to access camera');
       }
     };
 
@@ -51,6 +82,9 @@ const StreamTest: React.FC = () => {
 
   return (
     <div>
+      <h5 className='text-white max-w-md'>
+        supported: {JSON.stringify(supported)}
+      </h5>
       <h2 className='text-4xl font-bold text-white'>Camera Stream Test</h2>
       {error && (
         <div style={{ color: 'red', marginBottom: '1rem' }}>
